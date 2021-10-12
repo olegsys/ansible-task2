@@ -1,0 +1,15 @@
+---
+- name: add users
+  hosts: nodes
+  vars_files:
+    - vars/users
+  tasks:
+    - name: add users
+      user:
+        name: "{{ item.key  }}"
+        home: "{{ item.value.homedir }}"
+        shell: "{{ item.value.shell }}"
+        comment: "{{ item.value.email }}"
+        password: "{{ item.value.password  | password_hash('sha512')  }}"
+        update_password: on_create
+      with_dict: "{{ users }}"
